@@ -8,7 +8,10 @@
 #define TRANSMISSION_PROB 0.0295
 #define INFECTIVENESS_START 5
 #define INFECTIVENESS_END 13
-#define MOVEMENT_RATE 1
+#define MOVEMENT_RATE 2.5 //simulates population movement (trips per day)
+                        //1 = 1 extra random cell from site gets added to cell neighborhood per day
+                        //0 = lockdown = no movement
+                        //any floating decimal numbers are added as a random chance (e.g. 1.5 = 1 movement plus 50% chance of one extra)
 #define CURE_RATE 0.15
 
 #define DAYS 200
@@ -54,6 +57,7 @@ class Site
         float get_neighbourInfectives(int pos_x, int pos_y);
         void updateSite();
         void printSite();
+        int randRound(float num);
 };
 
 float discretize(float x);

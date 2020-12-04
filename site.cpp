@@ -22,6 +22,20 @@ float Site::get_neighbourInfectives(int pos_x, int pos_y)
             }   
         }
     }
+
+    //MOVEMENT_RATE amount of extra cells per day
+    int total_moves = randRound(MOVEMENT_RATE);
+    for(int i = 0; i < total_moves; i++) {
+        //res += TRANSMISSION_PROB * this->cell[x][y].get_totalInfective();
+        int rand_x;
+        int rand_y;
+        do {
+            rand_x = rand()%SITE_LENGHT;
+            rand_y = rand()%SITE_WIDTH;
+        } while(rand_x==pos_x && rand_y==pos_y);
+
+        res+= TRANSMISSION_PROB * this->cell[rand_x][rand_y].get_totalInfective();
+    }
     return res;
 }
 
@@ -56,4 +70,10 @@ void Site::printSite()
         cout<<"\n";
     }
     cout<<"\n";
+}
+
+int Site::randRound(float num) {
+    int count = int(num);
+    float plus_one = rand() / (float)RAND_MAX;
+    return plus_one < num-int(num) ? ++count : count;
 }
