@@ -69,6 +69,12 @@ void Site::printSite()
         }
         cout<<"\n";
     }
+    Cell avgCell = this->get_averageCell();
+    cout<<"currentDeceased="<< avgCell.get_currentDiseased()<<"\n";
+    cout<<"totalNonInfective="<< avgCell.get_totalNonInfective()<<"\n";
+    cout<<"totalInfective="<< avgCell.get_totalInfective()<<"\n";
+    cout<<"toBeCured="<< avgCell.get_toBeCured()<<"\n";
+    cout<<"cured="<< avgCell.get_cured()<<"\n";
     cout<<"\n";
 }
 
@@ -76,4 +82,27 @@ int Site::randRound(float num) {
     int count = int(num);
     float plus_one = rand() / (float)RAND_MAX;
     return plus_one < num-int(num) ? ++count : count;
+}
+
+/** return Cell with average attributes of all Cells of site **/
+Cell Site::get_averageCell()
+{
+    float totalNonInfective= 0.0, totalInfective= 0.0, toBeCured= 0.0, cured= 0.0;
+    int sizeOfSite = SITE_LENGHT * SITE_WIDTH;
+    for(int x=0;x<SITE_LENGHT;++x)
+    {
+        for(int y=0;y<SITE_WIDTH;++y)
+        {
+            totalNonInfective+=this->cell[x][y].get_totalNonInfective();
+            totalInfective+=this->cell[x][y].get_totalInfective();
+            toBeCured+=this->cell[x][y].get_toBeCured();
+            cured+=this->cell[x][y].get_cured();
+        }
+    }
+
+    totalNonInfective/=sizeOfSite;
+    totalInfective/=sizeOfSite;
+    toBeCured/=sizeOfSite;
+    cured/=sizeOfSite;
+    return {discretize(totalNonInfective), discretize(totalInfective), discretize(toBeCured), discretize(cured)};
 }
