@@ -26,7 +26,7 @@ float Site::get_neighbourInfectives(int pos_x, int pos_y)
     //MOVEMENT_RATE amount of extra cells per day
     int total_moves = randRound(MOVEMENT_RATE);
     for(int i = 0; i < total_moves; i++) {
-        //res += TRANSMISSION_PROB * this->cell[x][y].get_totalInfective();
+
         int rand_x;
         int rand_y;
         do {
@@ -76,6 +76,9 @@ void Site::printSite()
     cout<<"toBeCured="<< avgCell.get_toBeCured()<<"\n";
     cout<<"cured="<< avgCell.get_cured()<<"\n";
     cout<<"\n";
+
+    this->currentlyDiseased.push_back(avgCell.get_currentDiseased());
+    this->totalCured.push_back(avgCell.get_cured());
 }
 
 int Site::randRound(float num) {
@@ -105,4 +108,8 @@ Cell Site::get_averageCell()
     toBeCured/=sizeOfSite;
     cured/=sizeOfSite;
     return {discretize(totalNonInfective), discretize(totalInfective), discretize(toBeCured), discretize(cured)};
+}
+
+vector<float> Site::getDiseasedPerDay() {
+    return this->currentlyDiseased;
 }

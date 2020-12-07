@@ -1,5 +1,6 @@
 #include <iostream>  
 #include <queue> 
+#include <vector>
 #include <math.h>
 #include <time.h>
 
@@ -9,7 +10,7 @@ using namespace std;
 #define TRANSMISSION_PROB 0.0295
 #define INFECTIVENESS_START 5
 #define INFECTIVENESS_END 13
-#define MOVEMENT_RATE 2.5 //simulates population movement (trips per day)
+#define MOVEMENT_RATE 0 //simulates population movement (trips per day)
                         //1 = 1 extra random cell from site gets added to cell neighborhood per day
                         //0 = lockdown = no movement
                         //any floating decimal numbers are added as a random chance (e.g. 1.5 = 1 movement plus 50% chance of one extra)
@@ -54,6 +55,8 @@ class Cell
 class Site
 {
     private:
+        vector<float> currentlyDiseased; //current percent of diseased people per day
+        vector<float> totalCured;   //current percent of cured people per day
 
     public:
         Cell cell[SITE_LENGHT][SITE_WIDTH]; 
@@ -62,6 +65,7 @@ class Site
         int randRound(float num);
         float get_neighbourInfectives(int pos_x, int pos_y);
         Cell get_averageCell();
+        vector<float> getDiseasedPerDay();
 };
 
 float discretize(float x);

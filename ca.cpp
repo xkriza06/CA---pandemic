@@ -48,5 +48,12 @@ int main(int argc, char *argv[])
 
     mapa.updateSite();
 
+    vector<float> diseasedPerDay = mapa.getDiseasedPerDay();
+    cout << "diseasedPerDay = [\n";
+    for(auto i: diseasedPerDay) {
+    	cout << i << ", ";
+    }
+    cout << "];\n";
+
     return 0;  
 }
