@@ -2,7 +2,7 @@
 %Filip Čižmár (xcizma06), Samuel Križan (xkriza06)
 %2020
 
-\documentclass[11pt,a4paper,titlepage]{article}
+\documentclass[12pt,a4paper,titlepage]{article}
 \usepackage[left=2cm,text={17cm,24cm},top=3cm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage[czech]{babel}
@@ -65,7 +65,44 @@ Celulárny automat tohto projektu vychádza z matematického modelu SIR - Suscep
 \subsection{Pôvod použitých metód}
 Všetky použité metódy sú prebrané z nasledovného článku:
 
-\noindent https://www.researchgate.net/publication/228819056\_Using\_Cellular\_Automata\_to\_Simulate\_Epidemic\_Diseases
+\noindent https://www.researchgate.net/publication/228819056\_Using\_Cellular\_Automata\_to\_Simulate\_Epide\\mic\_Diseases
+
+\section{Koncepcia}
+Ako už bolo vyššie spomenuté, model použitý v našej práci vychádza z modelu SIR, ktorý sme však mierne upravili v snahe dosiahnuť väčšiu podobnosť s reálnym šírením choroby COVID-19. Nakoľko daná choroba ešte nie je dokonale preskúmaná, existuje množstvo odlišných popisov ochorenia. Preto sme sa rozhodli pre nasledovný kompromis: nakazený človek začne byť infekčný až po určitej dobe, a takisto je infekčný len určitú dobu. Po tejto dobe sa môže každým dňom s určitou pravdepodobnosťou vyliečiť alebo zomrieť. Vyliečený získava imunitu, t.j. už sa viac nemôže nakaziť.
+
+\begin{figure}[h!]
+    \center
+    \includegraphics[width=1\linewidth]{koncepcia.eps}
+    \caption{Priebeh ochorenia}
+\end{figure}
+
+Ako vidieť ochorenie má 4 fázy: nakazení neinfekční, nakazení infekční, nakazení neinfekční čakajúci na vyliečenie a vyliečení. Nakazení sa budú po jednotlivých dňoch posúvať v tejto schéme v smere šipiek, pričom prvé dve fázy fungujú na princípe fronty, kde každý štvorček symbolizuje 1 deň. V tretej fáze sa budú zbierať čakajúci na vyliečenie, z ktorých sa každý deň vylieči niekoľko percent. Keďže sme sa rozhodli nesledovať štatistiku úmrtí a keďže vyliečení získavajú imunitu, môžeme tieto dve skupiny zlúčiť a tým zjednodušiť model.
+
+
+Na výpočet nových nakazených sme takisto použili vzorec z článku\cite{Zdroj} upravený tak, aby zodpovedal nášmu modelu:
+
+{\Large\[ND =  H * ( P_d * I + IN )\]}%
+
+\noindent kde:
+\begin{itemize}
+  \item \(ND\)… noví nakazení,
+  \item \(H\)… zdraví, ktorí sa môžu nakaziť,
+  \item \(P_d\)… pravdepodobnosť nákazy pri kontakte – konštanta získaná z publikácií\cite{Minnesota},
+  \item \(I\)… počet infekčných v danej bunke,
+  \item \(IN = P_d\:*\) počet infekčných v okolí.
+\end{itemize}
+
+
+\section{Architektúra simulátora}
+Na implementáciu simulátora sme využili objektovo orientovaný prístup ponúkaný jazukom C++. Základnými prvkami v ňom sú triedy \(Cell\) a \(Site\). \(Cell\), ako už názov napovedá, má zodpovedať bunke cellulárneho automatu a uchovávať všetky potrebné údaje o nej, ako aj základné operácie s ňou. Trieda \(Site\) reprezentuje samotný automat, ktorý obsahuje dvojrozmerné pole buniek typu \(Cell\), umožňuje interakciu medzi bunkami a vyvoláva zmenu ich stavu. Za stav bunky považujeme množstvo práve nakazených z  \(<0,1>\) s presnosťou na 2 desatinné miesta, t.j. počet percent celej populácie, ktorí sú aktuálne nakazení. Podobne pracujeme aj s ostatními množinama. Pre tieto účeli máme vytvorenú diskretizačnú funkciu.
+
+\subsection{Mapovanie konceptuálneho modelu do simulátora}
+Obr. 1 v kapitole 3 zobrazuje obsah jednej bunky. Trieda \(Cell\) preto obsahuje dátovú štruktúru pre každú zo 4 fáz ochorenia samostatne. Pre prvé dve je to \(std::queue<float>\) a pre zvyšné dve obyčajný \(float\). Zároveň zabezpečuje plynulé prechádzanie danej skupiny nakazených celým reťazcom: pri prechode na nový deň (funkcia \(Cell::nextDay\)) sa najprv presunie niekoľko nakazených z 3. fázy do vyliečených a následna sa vyráta počet nových nakazených\footnote{Pretože sa nemení počet infekčných ani počet, čo sa môžu nakaziť, nezáleží na poradí týchto 2 operácií.}. Tí sa vložia na koniec fronty neinfekčných nakazených, čim sa ostatné hodnoty posunú a prvá sa vyberie a vloží na koniec fronty infekčných, tá sa obdobne posunie a prvá hodnota sa vloží do čakajúcich na vyliečenie.
+
+Pred prechodom na nový deň celého automatu je treba si vytvoriť kópiu buniek z objektu triedy \(Site\) – z nej sa bude počítať infekčnosť okolia požadovanej bunky. Potom sa preiterujú všetky bunky a so zistenou infekčnosťou okolia (z kópie) sa u každej spustí prechod na nový deň.
+
+\subsection{Infekčnosť okolia}
+Pri infekčnosti okolia berieme okrem klasického moorovho okolia do úvahy aj určitý počet náhodne zvolených buniek, čo by malo lepšie reprezentovať prirodzený pochyb obyvateľstva a obmedzenie tejto funkcie by zodpovedalo obmedzeniu pohyby v reálnom svete.
 
 \section{Podstata simulačných experimentov a ich priebeh}
 Podstatou experimentov bolo potvrdiť validitu modelu voči verejne-dostupným štatistikám z prvej/druhej vlny koronavírusu a následne zistiť efektivitu jednotlivých opatrení na spomalenie šírenia vírusov.
