@@ -5,7 +5,7 @@
 
 using namespace std;
 
-
+#define STARTING_INFECTED 5
 #define TRANSMISSION_PROB 0.0295
 #define INFECTIVENESS_START 5
 #define INFECTIVENESS_END 13
