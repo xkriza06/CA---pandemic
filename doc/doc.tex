@@ -60,18 +60,24 @@ Informácie týkajúce sa implementácie modelu boli získané z článku vedeck
 \subsection{Použité postupy}
 Celulárny automat tohto projektu vychádza z matematického modelu SIR - Susceptible (náchylní), Infected (infikovaní), Recovered (uzdravení). Rovnako ako vo vyššie zmienenom článku bola použitá možnosť Moorovho okolia bunky - teda všetky bunky v 3x3 štvorci so stredom v aktuálnej bunke.
 
-Jazyk implementácie je C++. Žiadne vonkajšie knižnice neboli použité.
+\noindent Jazyk implementácie je C++. Žiadne vonkajšie knižnice neboli použité.
 
 \subsection{Pôvod použitých metód}
-https://www.researchgate.net/publication/228819056\_Using\_Cellular\_Automata\_to\_Simulate\_Epidemic\_Diseases
+Všetky použité metódy sú prebrané z nasledovného článku:
 
-\section{Experimenty}
-Všetky experimenty prebiehali mapovaním výstupu modelu do grafov v programe GNU Octave, kde osa x reprezentuje po sebe nasledujúce dni a osa y reprezentuje celkové percento (resp. pomer) nakazených. Vstupné konštanty (koeficient pohybu obyvateľov, koeficient prenosu a pod.) boli pred štartom programu vždy zmenené, program bol viackrát spustený s rôznymi hodnotami a jednotlivé výstupy boli následne porovnané s reálnymi hodnotami. Cieľom experimentov bolo overiť validitu modelu voči momentálnemu vývoju pandémie Covidu-19 a tým pádom aj jeho využitie pri vývoji v budúcnosti.
+\noindent https://www.researchgate.net/publication/228819056\_Using\_Cellular\_Automata\_to\_Simulate\_Epidemic\_Diseases
 
-\subsection{Experiment 1}
+\section{Podstata simulačných experimentov a ich priebeh}
+Podstatou experimentov bolo potvrdiť validitu modelu voči verejne-dostupným štatistikám z prvej/druhej vlny koronavírusu a následne zistiť efektivitu jednotlivých opatrení na spomalenie šírenia vírusov.
+
+\subsection{Postup experimentovania}
+Všetky experimenty prebiehali mapovaním výstupu modelu do grafov v programe GNU Octave, kde osa x reprezentuje po sebe nasledujúce dni a osa y reprezentuje celkové percento (resp. pomer) nakazených. Vstupné konštanty (koeficient pohybu obyvateľov, koeficient prenosu a pod.) boli pred štartom programu vždy zmenené, program bol viackrát spustený s rôznymi hodnotami a jednotlivé výstupy boli následne porovnané s reálnymi hodnotami.
+
+\subsection{Jednotlivé experimenty}
+\subsubsection{Experiment č. 1}
 Prvý experiment popisuje šírenie vírusu pri zmene koeficientu pohybu. Štatistiky z reálneho sveta hovoria, že pri obmedzení pohybu obyvateľov štátu sa šírenie vírusu spomalí a maximálne množstvo súčasne nakazených obyvateľov sa zníži, brániac tak preplneniu zdravotníckych zariadení.
 
-Pri experimente boli použité hodnoty koeficientu pohybu 15, 3.5 a 0. Tieto čísla popisujú počet náhodných stretnutí s bunkami mimo Moorovho okolia bunky, kde 15 reprezentuje neobmedzený pohyb, 3.5 pohyb mierne obmedzený a 0 reprezentuje úplný lockdown v rámci okresov.
+Pri experimente boli použité hodnoty koeficientu pohybu 15, 3.5 a 0. Tieto čísla popisujú počet náhodných stretnutí s bunkami mimo Moorovho okolia bunky, kde 15 reprezentuje neobmedzený pohyb, 3.5 pohyb mierne obmedzený a 0 reprezentuje zákaz pohybu na väčšie vzdialenosti. Obyvatelia sa teda pohybujú len v rámci Moorovho okolia ich bunky.
 
 \begin{figure}[h!]
     \center
@@ -91,10 +97,9 @@ Pri experimente boli použité hodnoty koeficientu pohybu 15, 3.5 a 0. Tieto č�
     \caption{Koeficient pohybu 0}
 \end{figure}
 
-\newpage
-\subsection{Experiment 2}
+\subsubsection{Experiment č. 2}
 Experiment popisuje zmenu šírenia vírusu pri použití ochrany dýchacích ciest (rúška). V našom modeli predpokladáme, že 100\% obyvateľov používa chirurgické rúška a chirurgické rúško zadrží 75\% častíc.\cite{Masks}
-Experiment prebiehal s hodnotou koeficientu pohybu rovnému 5.
+Experiment prebiehal s hodnotou koeficientu pohybu rovnej 5.
 
 \begin{figure}[h!]
     \center
@@ -108,6 +113,11 @@ Experiment prebiehal s hodnotou koeficientu pohybu rovnému 5.
     \caption{100\% obyvateľov používa rúška}
 \end{figure}
 
+\subsection{Závery experimentov}
+Celkovo prebehli 2 experimenty: prvý s obmedzením pohybu a druhý s použitím masky. Model sa správal podľa očakávaní v oboch prípadoch.
+
+\section{Zhrnutie simulačných experimentov a záver}
+Z experimentov je jasné, že s menším koeficientom pohybu / použitím masky došlo k "splošteniu krivky" a teda výsledky sedia s ostatnými štúdiami. Je možné teda potvrdiť validitu modelu s dostatočnou dôveryhodnosťou. \cite{Experiment1}
 
 \newpage
 \renewcommand{\refname}{Referencie}
